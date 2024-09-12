@@ -5,7 +5,7 @@ It also offers the ability to customize text handling as well as customization o
 
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.0.
 
-## Installazione
+## Installation
 
 ```bash
 npm i truncate-word
