@@ -11,6 +11,9 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 npm i truncate-word
 ```
 
+# Demo
+Click here for demo online 👉🏻 [Stackblitz](https://stackblitz.com/edit/stackblitz-starters-coy8x5?file=src%2Fmain.ts)
+
 ## Implementation
 Import lib component
 
