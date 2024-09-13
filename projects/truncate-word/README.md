@@ -15,7 +15,7 @@ npm i truncate-word
 Click here for demo online 👉🏻 [Stackblitz](https://stackblitz.com/edit/stackblitz-starters-coy8x5?file=src%2Fmain.ts)
 
 ## Implementation
-Import lib component
+Import the library component
 
 ```
 import {TruncateWordComponent} from "truncate-word";
