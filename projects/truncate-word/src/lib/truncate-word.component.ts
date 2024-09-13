@@ -1,51 +1,45 @@
 import {
-  AfterViewInit,
+  booleanAttribute,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-  ViewChild
+  input,
+  output,
+  viewChild,
 } from '@angular/core';
-import {NgIf} from "@angular/common";
-
-import {IsEllipsisActiveDirective} from "./is-ellipsis-active.directive";
+import { IsEllipsisActiveDirective } from './is-ellipsis-active.directive';
 
 @Component({
   selector: 'ng-truncate-word',
   standalone: true,
-  imports: [NgIf, IsEllipsisActiveDirective],
+  imports: [IsEllipsisActiveDirective],
   template: `
     <section>
+      @if(isTruncated || isExpanded){
       <span
         aria-label="button that outputs the event on click and handle from the parent the truncated text"
         class="ellipsis_link"
-        *ngIf="isTruncated || isExpanded"
         (click)="showFullText($event)"
       >
-        <ng-container *ngIf="customEllipsis; else defaultText">
-          {{ customEllipsis }}
-        </ng-container>
-        <ng-template #defaultText>
-          <a href="#">show more</a>
-        </ng-template>
+        @if(customEllipsis()){
+        {{ customEllipsis() }}
+        } @else{
+        <a href="#">show more</a>
+        }
       </span>
+      }
       <div
         csiIsEllipsisActive
         [class.truncated]="!isExpanded"
-        [class.not-truncated]="disableUseEllipsis"
-        [csiTruncateLabel]="textShow ?? ''"
+        [class.not-truncated]="disableUseEllipsis()"
+        [csiTruncateLabel]="textShow()"
         [(isTruncated)]="isTruncated"
       >
-        {{ textShow }}
+        {{ textShow() }}
       </div>
     </section>
   `,
-  styles: `.truncated {
+  styles: `
+  .truncated {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -63,70 +57,43 @@ import {IsEllipsisActiveDirective} from "./is-ellipsis-active.directive";
     height: 1rem !important;
   }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TruncateWordComponent implements OnChanges, AfterViewInit {
+export class TruncateWordComponent {
   /**
    * Input text tho show and to be truncate in base de width of parent
    */
-  @Input({ required: true }) textShow: string | undefined;
+  textShow = input.required<string>();
   /**
    * Show alternative ellipsis to replace a classic button "show more"
    */
-  @Input() customEllipsis: string | null = null;
+  customEllipsis = input<string | null>(null);
   /**
    * If true in the click of button show full text truncated inside component and don't event emit for manage from parent
    */
-  @Input() showFullTextOnClick: boolean = false;
+  showFullTextOnClick = input(false, { transform: booleanAttribute });
   /**
    * If true removes suspension points
    */
-  @Input() disableUseEllipsis: boolean = false;
+  disableUseEllipsis = input(false, { transform: booleanAttribute });
   /**
    * Output the event when click the ellipsis button and don't work is showFullTextOnClick
    */
-  @Output() plusEvent = new EventEmitter();
-  @ViewChild(IsEllipsisActiveDirective) ellipsisDir!: IsEllipsisActiveDirective;
+  plusEvent = output<void>();
+  ellipsisDir = viewChild.required(IsEllipsisActiveDirective);
   isExpanded: boolean = false;
   isTruncated: boolean = false;
-  private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
-
-  ngAfterViewInit(): void {
-    // Check truncation after loading the view
-    setTimeout(() => {
-      this.ellipsisDir.checkTruncation();
-      this.cdr.detectChanges();
-    });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['textShow']) {
-      this.checkTruncation();
-    }
-  }
 
   /**
    * Emit outputs the event on click and handle from the parent the truncated text
    */
   showFullText(event: Event): void {
     event.preventDefault();
-    if (this.showFullTextOnClick) {
+    if (this.showFullTextOnClick()) {
       this.isExpanded = !this.isExpanded;
       this.isTruncated = !this.isExpanded;
     } else {
       this.plusEvent.emit();
     }
-  }
-
-  /**
-   * Recalculate the rendering of truncated element
-   * @private
-   */
-  private checkTruncation(): void {
-    setTimeout(() => {
-      if (this.ellipsisDir) {
-        this.ellipsisDir.checkTruncation();
-      }
-    }, 0);
   }
 }
