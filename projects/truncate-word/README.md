@@ -3,7 +3,8 @@
 The library is about giving the ability to truncate long text dynamically by adapting to the container it is in without having to handle truncation on the code or in style sheets by entering the fixed size or limit of precise character numbers. This is also to obviate the problem of the size of devices in which the application is located.
 It also offers the ability to customize text handling as well as customization of expanding dots or buttons.
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.0.
+## NOTE 🚨🚨🚨 
+_This library is compatible with only angular were have standalone API. From 14.x.x version of Angular._
 
 ## Installation
 
